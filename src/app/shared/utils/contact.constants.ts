@@ -1,11 +1,6 @@
 import type { ContactOption } from './contact.types';
 
 export const CONTACT = {
-    studioName: 'Caviglia y Asociados',
-    whatsapp: '5492364658333',
-    whatsappDisplay: '+54 2364 658333',
-    phone: '+54 236 4437032',
-    phoneLabel: 'Tel. fijo estudio',
     email: 'estudiocavigliayasoc@fibertel.com.ar',
     address: 'Roque Vázquez 73, Junín, Buenos Aires',
     hours: '10:00–14:00 h',
@@ -14,6 +9,7 @@ export const CONTACT = {
 } as const;
 
 export const CONTACT_OPTIONS: ContactOption[] = [
-    { fullName: 'Ramiro Caviglia', tel: CONTACT.whatsapp, displayPhone: CONTACT.whatsappDisplay },
-    { fullName: CONTACT.studioName, tel: CONTACT.phone, displayPhone: CONTACT.phone, isLandline: true },
+    { fullName: 'Ramiro', tel: '5492364658333', displayPhone: '+54 9 2364 65-8333' },
+    { fullName: 'Gaston', tel: '5492364643542', displayPhone: '+54 9 2364 64-3542' },
+    { fullName: 'Octavio', tel: '5492364678472', displayPhone: '+54 9 2364 67-8472' },
 ];

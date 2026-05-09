@@ -11,6 +11,5 @@ import { WhatsappIconComponent } from '@shared/components/whatsapp-icon/whatsapp
 export class ContactCardComponent {
     readonly fullName = input.required<string>();
     readonly phone = input<string>();
-    readonly isLandline = input(false);
     readonly selected = output<void>();
 }

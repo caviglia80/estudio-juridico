@@ -4,12 +4,16 @@ $bg-primary: #1a2332;
 $bg-secondary: #0f1825;
 $header-height: 3.5rem;
 
-// Focus mixin reutilizable
 @mixin gold-focus {
     &:focus-visible {
         outline: none;
         box-shadow: 0 0 0 2px rgba($gold, 0.5);
     }
+}
+
+@mixin glass($blur: 12px, $saturate: 115%) {
+    backdrop-filter: blur($blur) saturate($saturate);
+    -webkit-backdrop-filter: blur($blur) saturate($saturate);
 }
 
 // Elevar sobre el overlay oscuro de .imagen::before
@@ -37,8 +41,7 @@ $header-height: 3.5rem;
         linear-gradient(160deg, rgba($bg-primary, 0.58) 0%, rgba($bg-secondary, 0.72) 100%),
         radial-gradient(circle at top left, rgba($gold, 0.09) 0%, transparent 34%),
         radial-gradient(circle at bottom right, rgba(255, 255, 255, 0.05) 0%, transparent 30%);
-    backdrop-filter: blur(18px) saturate(120%);
-    -webkit-backdrop-filter: blur(18px) saturate(120%);
+    @include glass(18px, 120%);
     box-shadow: 0 24px 60px rgba(0, 0, 0, 0.3);
     color: var(--color-text);
 
@@ -46,8 +49,7 @@ $header-height: 3.5rem;
         border: none;
         border-radius: 0;
         background: linear-gradient(160deg, rgba($bg-primary, 0.5) 0%, rgba($bg-secondary, 0.64) 100%);
-        backdrop-filter: blur(14px) saturate(115%);
-        -webkit-backdrop-filter: blur(14px) saturate(115%);
+        @include glass(14px);
         box-shadow: none;
     }
 }
@@ -72,8 +74,7 @@ $header-height: 3.5rem;
     padding: 0 1rem;
     position: relative;
     background: linear-gradient(180deg, rgba($bg-primary, 0.42) 0%, rgba($bg-primary, 0.28) 100%);
-    backdrop-filter: blur(12px) saturate(115%);
-    -webkit-backdrop-filter: blur(12px) saturate(115%);
+    @include glass;
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     box-shadow: 0 1px 8px rgba(0, 0, 0, 0.25);
     flex-shrink: 0;
@@ -297,8 +298,7 @@ $header-height: 3.5rem;
         border: 1px solid rgba(255, 255, 255, 0.12);
         border-radius: 16px 16px 16px 4px;
         color: #f0ece2;
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
+        @include glass(10px, 100%);
     }
 }
 
@@ -342,8 +342,7 @@ $header-height: 3.5rem;
     border-radius: 999px;
     background: rgba($bg-primary, 0.4);
     color: rgba(255, 255, 255, 0.82);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    @include glass(10px, 100%);
     font-size: 0.72rem;
     line-height: 1;
     cursor: pointer;
@@ -461,8 +460,7 @@ $header-height: 3.5rem;
     border-radius: 50%;
     border: 1px solid rgba(255, 255, 255, 0.15);
     background: rgba($bg-primary, 0.52);
-    backdrop-filter: blur(8px) saturate(115%);
-    -webkit-backdrop-filter: blur(8px) saturate(115%);
+    @include glass(8px);
     color: $gold;
     cursor: pointer;
     display: flex;
@@ -489,8 +487,7 @@ $header-height: 3.5rem;
     padding-bottom: calc(0.75rem + env(safe-area-inset-bottom, 0px));
     position: relative;
     background: linear-gradient(180deg, rgba($bg-secondary, 0.28) 0%, rgba($bg-secondary, 0.46) 100%);
-    backdrop-filter: blur(12px) saturate(115%);
-    -webkit-backdrop-filter: blur(12px) saturate(115%);
+    @include glass;
     border-top: 1px solid rgba(255, 255, 255, 0.08);
     box-shadow: 0 -1px 8px rgba(0, 0, 0, 0.15);
     flex-shrink: 0;

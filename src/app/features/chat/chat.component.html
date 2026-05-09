@@ -77,7 +77,7 @@
                     <span>Copiar</span>
                     }
                 </button>
-                <button type="button" class="chat-bubble-action chat-bubble-action-danger" (click)="deleteMessage(msg)" [disabled]="!canDeleteMessage(msg) || isDeleting(msg.id)"
+                <button type="button" class="chat-bubble-action chat-bubble-action-danger" (click)="deleteMessage(msg)" [disabled]="!canDeleteMessage(msg)"
                     [attr.title]="msg.serverId ? 'Borrar mensaje' : 'No disponible para mensajes sin identificador persistido'">
                     @if (isDeleting(msg.id)) {
                     <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>

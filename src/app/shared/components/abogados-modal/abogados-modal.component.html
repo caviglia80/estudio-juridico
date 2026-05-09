@@ -4,7 +4,7 @@
     <div class="modal-body p-2">
         <div class="d-flex flex-column gap-2">
             @for (person of options; track person.tel) {
-            <ej-contact-card [fullName]="person.fullName" [phone]="person.displayPhone" [isLandline]="person.isLandline ?? false" (selected)="seleccionar(person)" />
+            <ej-contact-card [fullName]="person.fullName" [phone]="person.displayPhone" (selected)="seleccionar(person)" />
             }
         </div>
     </div>

@@ -1,6 +1,5 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-import { AbogadosModalComponent, ABOGADOS_MODAL_CONFIG, ModalHeaderComponent } from '@shared/components';
-import { ModalService } from '@shared/modal';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { ModalHeaderComponent } from '@shared/components';
 import { CONTACT, CONTACT_OPTIONS } from '@shared/utils';
 
 @Component({
@@ -11,17 +10,11 @@ import { CONTACT, CONTACT_OPTIONS } from '@shared/utils';
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ContactoModalComponent {
-    private readonly modalService = inject(ModalService);
-
     protected readonly iframeCargado = signal(false);
     protected readonly contact = CONTACT;
-    protected readonly abogado = CONTACT_OPTIONS[0];
+    protected readonly abogados = CONTACT_OPTIONS;
 
     protected onIframeLoad(): void {
         this.iframeCargado.set(true);
-    }
-
-    protected openAbogados(): void {
-        this.modalService.open(AbogadosModalComponent, ABOGADOS_MODAL_CONFIG);
     }
 }

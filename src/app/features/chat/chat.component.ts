@@ -23,6 +23,7 @@ interface DisplayMessage {
 }
 
 const MAX_MESSAGE_LENGTH = 4000;
+const TEXTAREA_MAX_HEIGHT = 120;
 
 @Component({
     selector: 'ej-chat',
@@ -116,8 +117,7 @@ export class ChatComponent implements OnInit, OnDestroy {
 
     protected onInput(textarea: HTMLTextAreaElement): void {
         this.input.set(textarea.value);
-        textarea.style.height = 'auto';
-        textarea.style.height = `${Math.min(textarea.scrollHeight, 120)}px`;
+        this.resizeTextarea(textarea);
     }
 
     protected onScroll(): void {
@@ -281,8 +281,12 @@ export class ChatComponent implements OnInit, OnDestroy {
         const el = this.inputRef()?.nativeElement;
         if (!el) { return; }
         el.value = value;
+        this.resizeTextarea(el);
+    }
+
+    private resizeTextarea(el: HTMLTextAreaElement): void {
         el.style.height = 'auto';
-        el.style.height = `${Math.min(el.scrollHeight, 120)}px`;
+        el.style.height = `${Math.min(el.scrollHeight, TEXTAREA_MAX_HEIGHT)}px`;
     }
 
     private async writeToClipboard(text: string): Promise<void> {
