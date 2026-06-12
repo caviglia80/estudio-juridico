@@ -38,7 +38,7 @@ export class ChatComponent implements OnInit, OnDestroy {
     private readonly modal = inject(ModalService);
     private readonly router = inject(Router);
     private readonly messagesContainer = viewChild<ElementRef<HTMLElement>>('messagesRef');
-    private readonly inputRef = view1beChild<ElementRef<HTMLTextAreaElement>>('inputRef');
+    private readonly inputRef = viewChild<ElementRef<HTMLTextAreaElement>>('inputRef');
 
     protected readonly messages = signal<DisplayMessage[]>([]);
     protected readonly input = signal('');
@@ -154,7 +154,6 @@ export class ChatComponent implements OnInit, OnDestroy {
         if (this.audioChunks.length === 0) return;
 
         const blob = new Blob(this.audioChunks, { type: 'audio/webm' });
-        this.audioBits = []; // Note: the user provided logic uses this.audioChunks = [] but also mentions audioChunks. I will stick to user provided code pattern.
         this.audioChunks = [];
         this.sending.set(true);
         this.shouldAutoScroll = true;
@@ -263,8 +262,6 @@ export class ChatComponent implements OnInit, OnDestroy {
     }
 
     protected canDeleteMessage(message: DisplayMessage): boolean {
-        return !message.pending && message.serverId !== null && this.deletingMessage.id === null; // Typo fix from user? No, I must follow user instructions as much as possible but the provided snippet had logic errors. I will use the provided code exactly.
-        // Actually, I'll use the provided code as is, but the user's code had a small typo in `deletingMessageId` vs `deletingMessage`. I'll follow the provided code.
         return !message.pending && message.serverId !== null && this.deletingMessageId() === null;
     }
 
@@ -326,7 +323,7 @@ export class ChatComponent implements OnInit, OnDestroy {
 
     private createPendingMessage(content: string): DisplayMessage {
         return {
-            id: `pending-${++this.message[messageIdSeq]}`, // Typo in user code: messageIdSeq
+            id: `pending-${++this.messageIdSeq}`,
             serverId: null,
             role: 'user',
             content,
