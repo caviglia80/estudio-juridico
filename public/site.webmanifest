@@ -1,0 +1,15 @@
+{
+  "name": "Estudio Jurídico Caviglia & Asociados",
+  "short_name": "Caviglia & Asociados",
+  "description": "Estudio jurídico en Junín, Buenos Aires. Asesoramiento en derecho civil, laboral, familia, sucesiones, contratos y daños.",
+  "lang": "es-AR",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#1b1b1b",
+  "theme_color": "#1b1b1b",
+  "icons": [
+    { "src": "/assets/img/favicon.svg", "type": "image/svg+xml", "sizes": "any", "purpose": "any" },
+    { "src": "/assets/img/logo.png", "type": "image/png", "sizes": "1264x842", "purpose": "any" }
+  ]
+}

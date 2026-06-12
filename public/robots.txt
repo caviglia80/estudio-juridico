@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /gideon
+
+Sitemap: https://cavigliayasociados.com.ar/sitemap.xml
