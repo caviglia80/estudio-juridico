@@ -5,7 +5,7 @@ import { AsyncPipe, NgOptimizedImage } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 
 import { AuthService } from '@shared/auth';
-import { ChatService, type AudioChatResponse, type ChatMessage } from '@shared/chat';
+import { ChatService, type AudioChatResponse, type ChatMessage, type ChatModel } from '@shared/chat';
 import { ModalService } from '@shared/modal';
 import { httpErrorMessage } from '@shared/utils';
 import { MarkdownPipe } from 'ngx-markdown';
@@ -24,6 +24,7 @@ interface DisplayMessage {
 
 const MAX_MESSAGE_LENGTH = 4000;
 const TEXTAREA_MAX_HEIGHT = 120;
+const MODEL_STORAGE_KEY = 'gideon-chat-model';
 
 @Component({
     selector: 'ej-chat',
@@ -51,6 +52,9 @@ export class ChatComponent implements OnInit, OnDestroy {
     protected readonly copiedMessageId = signal<string | null>(null);
     protected readonly deletingMessageId = signal<string | null>(null);
     protected readonly recording = signal(false);
+    protected readonly models = signal<readonly ChatModel[]>([]);
+    protected readonly selectedModelId = signal<string | null>(null);
+    protected readonly showModelSelector = computed(() => this.models().length > 1);
     protected readonly maxLength = MAX_MESSAGE_LENGTH;
     protected readonly canSend = computed(() => {
         const text = this.input().trim();
@@ -74,6 +78,7 @@ export class ChatComponent implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         void this.loadHistory();
+        void this.loadModels();
     }
 
     ngOnDestroy(): void {
@@ -97,7 +102,7 @@ export class ChatComponent implements OnInit, OnDestroy {
         this.sending.set(true);
 
         try {
-            const result = await this.chat.sendMessage(text);
+            const result = await this.chat.sendMessage(text, this.selectedModelId() ?? undefined);
             this.messages.update(msgs => {
                 const withoutPending = msgs.filter(msg => msg.id !== pendingMessage.id);
                 const persistedMessages = result.messages.map(message => this.toDisplayMessage(message));
@@ -173,6 +178,21 @@ export class ChatComponent implements OnInit, OnDestroy {
             this.error.set(this.toErrorMessage(err));
         } finally {
             this.sending.set(false);
+        }
+    }
+
+    protected onModelChange(event: Event): void {
+        const target = event.target;
+        if (!(target instanceof HTMLSelectElement)) { return; }
+
+        const modelId = target.value;
+        if (!this.models().some(model => model.id === modelId)) { return; }
+
+        this.selectedModelId.set(modelId);
+        try {
+            localStorage.setItem(MODEL_STORAGE_KEY, modelId);
+        } catch {
+            // localStorage no disponible (modo privado estricto) — la selección vive solo en la sesión
         }
     }
 
@@ -291,6 +311,33 @@ export class ChatComponent implements OnInit, OnDestroy {
         this.historyFailed.set(false);
         this.error.set(null);
         await this.loadHistory();
+    }
+
+    private async loadModels(): Promise<void> {
+        try {
+            const response = await this.chat.getModels();
+            this.models.set(response.models);
+            this.selectedModelId.set(this.resolveInitialModel(response.models, response.defaultModelId));
+        } catch {
+            // Sin lista de modelos el selector no se muestra y el backend usa su default
+            this.models.set([]);
+            this.selectedModelId.set(null);
+        }
+    }
+
+    private resolveInitialModel(models: readonly ChatModel[], defaultModelId: string): string {
+        let stored: string | null = null;
+        try {
+            stored = localStorage.getItem(MODEL_STORAGE_KEY);
+        } catch {
+            stored = null;
+        }
+
+        if (stored && models.some(model => model.id === stored)) {
+            return stored;
+        }
+
+        return defaultModelId;
     }
 
     private async loadHistory(): Promise<void> {

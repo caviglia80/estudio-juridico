@@ -26,3 +26,19 @@ export interface ChatHistory {
 export interface DeleteChatMessageResponse {
     readonly deletedMessageId: string;
 }
+
+export interface ChatModel {
+    readonly id: string;
+    /** Nombre corto para el selector (ej: "Gemma4", "Sonnet 4.6") */
+    readonly shortLabel: string;
+    readonly label: string;
+    readonly description: string;
+    readonly provider: string;
+    readonly tier: string;
+    readonly isDefault: boolean;
+}
+
+export interface ChatModelsResponse {
+    readonly models: readonly ChatModel[];
+    readonly defaultModelId: string;
+}

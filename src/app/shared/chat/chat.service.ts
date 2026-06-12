@@ -3,18 +3,28 @@ import { Injectable, inject } from '@angular/core';
 import { firstValueFrom, timeout } from 'rxjs';
 import { environment } from '@env/environment';
 
-import type { ChatHistory, ChatResponse, DeleteChatMessageResponse, AudioChatResponse } from './chat.types';
+import type { ChatHistory, ChatModelsResponse, ChatResponse, DeleteChatMessageResponse, AudioChatResponse } from './chat.types';
 
 const REQUEST_TIMEOUT = 60_000;
+// Los modelos Claude (Sonnet) con razonamiento pueden superar el minuto
+const SEND_MESSAGE_TIMEOUT = 180_000;
 
 @Injectable({ providedIn: 'root' })
 export class ChatService {
     private readonly http = inject(HttpClient);
     private readonly baseUrl = `${environment.gideonBaseUrl}/api/webchat`;
 
-    async sendMessage(message: string): Promise<ChatResponse> {
+    async sendMessage(message: string, model?: string): Promise<ChatResponse> {
         return firstValueFrom(
-            this.http.post<ChatResponse>(`${this.baseUrl}/messages`, { message }).pipe(
+            this.http.post<ChatResponse>(`${this.baseUrl}/messages`, { message, ...(model ? { model } : {}) }).pipe(
+                timeout(SEND_MESSAGE_TIMEOUT),
+            ),
+        );
+    }
+
+    async getModels(): Promise<ChatModelsResponse> {
+        return firstValueFrom(
+            this.http.get<ChatModelsResponse>(`${this.baseUrl}/models`).pipe(
                 timeout(REQUEST_TIMEOUT),
             ),
         );

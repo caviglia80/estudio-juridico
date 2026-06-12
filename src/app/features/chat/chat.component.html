@@ -13,6 +13,19 @@
             </div>
         </div>
         <div class="chat-header-right">
+            @if (showModelSelector()) {
+            <select
+                class="chat-model-select"
+                [value]="selectedModelId()"
+                (change)="onModelChange($event)"
+                [disabled]="sending()"
+                title="Modelo de IA"
+                aria-label="Seleccionar modelo de IA">
+                @for (model of models(); track model.id) {
+                <option [value]="model.id" [selected]="model.id === selectedModelId()">{{ model.shortLabel }}</option>
+                }
+            </select>
+            }
             @if (messages().length > 0 && confirmingClear()) {
             <span class="chat-confirm-text">¿Borrar historial?</span>
             <button type="button" class="chat-action chat-action-confirm" (click)="confirmClear()" aria-label="Confirmar borrado">
