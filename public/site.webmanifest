@@ -9,7 +9,8 @@
   "background_color": "#1b1b1b",
   "theme_color": "#1b1b1b",
   "icons": [
-    { "src": "/assets/img/favicon.svg", "type": "image/svg+xml", "sizes": "any", "purpose": "any" },
-    { "src": "/assets/img/logo.png", "type": "image/png", "sizes": "1264x842", "purpose": "any" }
+    { "src": "/favicon-32x32.png", "type": "image/png", "sizes": "32x32", "purpose": "any" },
+    { "src": "/android-chrome-192x192.png", "type": "image/png", "sizes": "192x192", "purpose": "any" },
+    { "src": "/android-chrome-512x512.png", "type": "image/png", "sizes": "512x512", "purpose": "any" }
   ]
 }

@@ -162,8 +162,8 @@ export class ChatComponent implements OnInit, OnDestroy {
             const arrayBuffer = await blob.arrayBuffer();
             const uint8 = new Uint8Array(arrayBuffer);
             let binary = '';
-            for (let i = 0; i < uint8.length; i++) {
-                binary += String.fromCharCode(uint8[i] ?? 0);
+            for (const byte of uint8) {
+                binary += String.fromCharCode(byte);
             }
             const audioBase64 = btoa(binary);
             const result: AudioChatResponse = await this.chat.sendAudio(audioBase64);
