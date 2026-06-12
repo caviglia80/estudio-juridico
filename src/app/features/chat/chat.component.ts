@@ -1,4 +1,4 @@
-import { afterRenderEffect, ChangeDetectionStrategy, Component, computed, inject, signal, viewChild } from '@angular/core';
+import { afterRenderEffect, ChangeDetectionStrategy, Component, computed, effect, inject, signal, viewChild } from '@angular/core';
 import type { ElementRef, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AsyncPipe, NgOptimizedImage } from '@angular/common';
@@ -6,6 +6,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 
 import { AuthService } from '@shared/auth';
 import { ChatService, type AudioChatResponse, type ChatMessage, type ChatModel } from '@shared/chat';
+import { VoiceCallService } from '@shared/voice';
 import { ModalService } from '@shared/modal';
 import { httpErrorMessage } from '@shared/utils';
 import { MarkdownPipe } from 'ngx-markdown';
@@ -38,6 +39,7 @@ export class ChatComponent implements OnInit, OnDestroy {
     private readonly chat = inject(ChatService);
     private readonly modal = inject(ModalService);
     private readonly router = inject(Router);
+    protected readonly voice = inject(VoiceCallService);
     private readonly messagesContainer = viewChild<ElementRef<HTMLElement>>('messagesRef');
     private readonly inputRef = viewChild<ElementRef<HTMLTextAreaElement>>('inputRef');
 
@@ -67,11 +69,40 @@ export class ChatComponent implements OnInit, OnDestroy {
     private mediaRecorder: MediaRecorder | undefined;
     private audioChunks: Blob[] = [];
 
+    protected readonly voiceStateLabel = computed(() => {
+        switch (this.voice.state()) {
+            case 'connecting': return 'Conectando…';
+            case 'listening': return 'Te escucho…';
+            case 'thinking': return 'Pensando…';
+            case 'speaking': return 'Hablando';
+            default: return '';
+        }
+    });
+
+    protected readonly voiceElapsed = computed(() => {
+        const total = this.voice.elapsedSeconds();
+        const minutes = Math.floor(total / 60);
+        const seconds = total % 60;
+        return `${minutes}:${String(seconds).padStart(2, '0')}`;
+    });
+
     constructor() {
         afterRenderEffect(() => {
             this.messages();
             if (this.shouldAutoScroll) {
                 this.scrollToBottom();
+            }
+        });
+        // Al terminar una llamada, traer los turnos de voz persistidos al hilo del chat
+        // (y conservar el motivo si se cortó por error, ya que el overlay desaparece)
+        effect(() => {
+            if (this.voice.state() === 'ended') {
+                const voiceError = this.voice.errorMessage();
+                if (voiceError) {
+                    this.error.set(voiceError);
+                }
+                this.voice.acknowledgeEnd();
+                void this.loadHistory();
             }
         });
     }
@@ -86,6 +117,14 @@ export class ChatComponent implements OnInit, OnDestroy {
         if (this.mediaRecorder && this.recording()) {
             this.mediaRecorder.stop();
         }
+        if (this.voice.active()) {
+            this.voice.hangUp();
+        }
+    }
+
+    protected startVoiceCall(): void {
+        if (this.sending() || this.recording() || this.voice.active()) return;
+        void this.voice.start(this.selectedModelId() ?? undefined);
     }
 
     protected async send(): Promise<void> {
