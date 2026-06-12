@@ -1,2 +1,2 @@
-export * from './chat.service';
-export * from './chat.types';
+export { ChatService } from './chat.service';
+export type { ChatHistory, ChatMessage, ChatResponse, DeleteChatMessageResponse, AudioChatResponse } from './chat.types';

@@ -11,6 +11,13 @@ export interface ChatResponse {
     readonly messages: readonly ChatMessage[];
 }
 
+export interface AudioChatResponse {
+    readonly transcribedText: string;
+    readonly response: string;
+    readonly durationMs: number;
+    readonly messages: readonly ChatMessage[];
+}
+
 export interface ChatHistory {
     readonly messages: readonly ChatMessage[];
     readonly hasMore: boolean;

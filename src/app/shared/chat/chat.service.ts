@@ -3,7 +3,7 @@ import { Injectable, inject } from '@angular/core';
 import { firstValueFrom, timeout } from 'rxjs';
 import { environment } from '@env/environment';
 
-import type { ChatHistory, ChatResponse, DeleteChatMessageResponse } from './chat.types';
+import type { ChatHistory, ChatResponse, DeleteChatMessageResponse, AudioChatResponse } from './chat.types';
 
 const REQUEST_TIMEOUT = 60_000;
 
@@ -16,6 +16,14 @@ export class ChatService {
         return firstValueFrom(
             this.http.post<ChatResponse>(`${this.baseUrl}/messages`, { message }).pipe(
                 timeout(REQUEST_TIMEOUT),
+            ),
+        );
+    }
+
+    async sendAudio(audioBase64: string): Promise<AudioChatResponse> {
+        return firstValueFrom(
+            this.http.post<AudioChatResponse>(`${this.baseUrl}/messages/audio`, { audioBase64 }).pipe(
+                timeout(120_000),
             ),
         );
     }
