@@ -1,0 +1,19 @@
+// Tema compartido de la feature chat (variables y mixins usados por el chat y la llamada de voz)
+
+$gold: #c9b173;
+$gold-dark: #a48a4d;
+$bg-primary: #1a2332;
+$bg-secondary: #0f1825;
+$header-height: 3.5rem;
+
+@mixin gold-focus {
+    &:focus-visible {
+        outline: none;
+        box-shadow: 0 0 0 2px rgba($gold, 0.5);
+    }
+}
+
+@mixin glass($blur: 12px, $saturate: 115%) {
+    backdrop-filter: blur($blur) saturate($saturate);
+    -webkit-backdrop-filter: blur($blur) saturate($saturate);
+}

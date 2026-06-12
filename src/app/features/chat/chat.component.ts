@@ -13,6 +13,7 @@ import { MarkdownPipe } from 'ngx-markdown';
 
 import { DELETE_MESSAGE_MODAL_DATA } from './delete-message-modal/delete-message-modal.token';
 import { DeleteMessageModalComponent, DELETE_MESSAGE_MODAL_CONFIG } from './delete-message-modal/delete-message-modal.component';
+import { VoiceCallOverlayComponent } from './voice-call-overlay/voice-call-overlay.component';
 
 interface DisplayMessage {
     readonly id: string;
@@ -29,7 +30,7 @@ const MODEL_STORAGE_KEY = 'gideon-chat-model';
 
 @Component({
     selector: 'ej-chat',
-    imports: [MarkdownPipe, AsyncPipe, NgOptimizedImage],
+    imports: [MarkdownPipe, AsyncPipe, NgOptimizedImage, VoiceCallOverlayComponent],
     templateUrl: './chat.component.html',
     styleUrl: './chat.component.scss',
     changeDetection: ChangeDetectionStrategy.OnPush,
@@ -68,23 +69,6 @@ export class ChatComponent implements OnInit, OnDestroy {
     private copyResetTimer: ReturnType<typeof setTimeout> | undefined;
     private mediaRecorder: MediaRecorder | undefined;
     private audioChunks: Blob[] = [];
-
-    protected readonly voiceStateLabel = computed(() => {
-        switch (this.voice.state()) {
-            case 'connecting': return 'Conectando…';
-            case 'listening': return 'Te escucho…';
-            case 'thinking': return 'Pensando…';
-            case 'speaking': return 'Hablando';
-            default: return '';
-        }
-    });
-
-    protected readonly voiceElapsed = computed(() => {
-        const total = this.voice.elapsedSeconds();
-        const minutes = Math.floor(total / 60);
-        const seconds = total % 60;
-        return `${minutes}:${String(seconds).padStart(2, '0')}`;
-    });
 
     constructor() {
         afterRenderEffect(() => {
