@@ -142,6 +142,15 @@ export class ChatComponent implements OnInit, OnDestroy {
 
         try {
             const result = await this.chat.sendMessage(text, this.selectedModelId() ?? undefined);
+            if (result.messages.length === 0) {
+                // El backend no persistió el turno (error de sistema, rate-limit, etc.): el texto del
+                // problema viene en `response` y `messages` vacío. No descartar el mensaje del usuario
+                // en silencio — restaurar el input y mostrar el aviso para que pueda reintentar.
+                this.messages.update(msgs => msgs.filter(msg => msg.id !== pendingMessage.id));
+                this.setInputValue(text);
+                this.error.set(this.unpersistedTurnMessage(result.response));
+                return;
+            }
             this.messages.update(msgs => {
                 const withoutPending = msgs.filter(msg => msg.id !== pendingMessage.id);
                 const persistedMessages = result.messages.map(message => this.toDisplayMessage(message));
@@ -211,7 +220,12 @@ export class ChatComponent implements OnInit, OnDestroy {
             }
             const audioBase64 = btoa(binary);
             const result: AudioChatResponse = await this.chat.sendAudio(audioBase64);
-            this.messages.update(() => result.messages.map(msg => this.toDisplayMessage(msg)));
+            if (result.messages.length === 0) {
+                // Sin turno persistido (fallo de transcripción o de IA): avisar sin tocar el historial.
+                this.error.set(this.unpersistedTurnMessage(result.response));
+                return;
+            }
+            this.messages.update(msgs => [...msgs, ...result.messages.map(msg => this.toDisplayMessage(msg))]);
             this.scrollToBottomDeferred();
         } catch (err: unknown) {
             this.error.set(this.toErrorMessage(err));
@@ -480,5 +494,11 @@ export class ChatComponent implements OnInit, OnDestroy {
             return 'El mensaje ya no está disponible.';
         }
         return httpErrorMessage(err);
+    }
+
+    /** Mensaje a mostrar cuando el backend devolvió respuesta pero no persistió el turno */
+    private unpersistedTurnMessage(response: string): string {
+        const trimmed = response.trim();
+        return trimmed.length > 0 ? trimmed : 'No se pudo procesar el mensaje. Probá de nuevo.';
     }
 }
