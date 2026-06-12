@@ -179,22 +179,6 @@
     }
 }
 
-.chat-action-confirm {
-    color: #4caf50;
-    opacity: 0.85;
-
-    &:hover {
-        opacity: 1;
-        color: #66bb6a;
-    }
-}
-
-.chat-confirm-text {
-    font-size: 0.78rem;
-    color: rgba(255, 255, 255, 0.6);
-    white-space: nowrap;
-}
-
 // Messages area
 .chat-messages {
     flex: 1;

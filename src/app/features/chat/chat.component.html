@@ -26,20 +26,8 @@
                 }
             </select>
             }
-            @if (messages().length > 0 && confirmingClear()) {
-            <span class="chat-confirm-text">¿Borrar historial?</span>
-            <button type="button" class="chat-action chat-action-confirm" (click)="confirmClear()" aria-label="Confirmar borrado">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
-                    <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425z" />
-                </svg>
-            </button>
-            <button type="button" class="chat-action" (click)="cancelClear()" aria-label="Cancelar borrado">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
-                    <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
-                </svg>
-            </button>
-            } @else if (messages().length > 0) {
-            <button type="button" class="chat-action" (click)="requestClearChat()" title="Limpiar chat" aria-label="Limpiar historial" [disabled]="sending()">
+            @if (messages().length > 0) {
+            <button type="button" class="chat-action" (click)="clearChat()" title="Limpiar chat" aria-label="Limpiar historial" [disabled]="sending()">
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
                     <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z" />
                     <path

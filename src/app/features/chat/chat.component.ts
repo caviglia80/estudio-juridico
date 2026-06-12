@@ -51,7 +51,6 @@ export class ChatComponent implements OnInit, OnDestroy {
     protected readonly error = signal<string | null>(null);
     protected readonly historyFailed = signal(false);
     protected readonly showScrollButton = signal(false);
-    protected readonly confirmingClear = signal(false);
     protected readonly copiedMessageId = signal<string | null>(null);
     protected readonly deletingMessageId = signal<string | null>(null);
     protected readonly recording = signal(false);
@@ -326,16 +325,7 @@ export class ChatComponent implements OnInit, OnDestroy {
         void this.router.navigate(['/']);
     }
 
-    protected requestClearChat(): void {
-        this.confirmingClear.set(true);
-    }
-
-    protected cancelClear(): void {
-        this.confirmingClear.set(false);
-    }
-
-    protected async confirmClear(): Promise<void> {
-        this.confirmingClear.set(false);
+    protected async clearChat(): Promise<void> {
         try {
             await this.chat.clearHistory();
             this.messages.set([]);
