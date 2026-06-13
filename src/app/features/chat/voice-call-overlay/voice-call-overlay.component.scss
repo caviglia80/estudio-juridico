@@ -36,8 +36,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 10.5rem;
-    height: 10.5rem;
+    width: 11rem;
+    height: 11rem;
     border-radius: 50%;
     border: 2px solid rgba($gold, 0.35);
     background: radial-gradient(circle, rgba($gold, 0.08) 0%, transparent 70%);
@@ -80,8 +80,11 @@
 }
 
 .voice-logo {
-    width: 6.5rem;
+    // Maximo rectangulo 4:3 inscrito en el circulo de 11rem ~ 8.8rem de ancho:
+    // 8.25rem llena el anillo dejando un margen fino, sin salirse
+    width: 8.25rem;
     height: auto;
+    display: block;
     object-fit: contain;
     opacity: 0.95;
     filter: sepia(1) saturate(2) brightness(0.95) hue-rotate(10deg);
