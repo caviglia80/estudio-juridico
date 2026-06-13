@@ -5,13 +5,27 @@
     img {
         user-select: none;
         -webkit-user-drag: none;
+        // El logo (392px intrinsecos) no debe desbordar en pantallas chicas
+        max-width: min(80vw, 392px);
+        height: auto;
     }
+}
+
+// Safe areas iOS (viewport-fit=cover): los wrappers absolutos compensan notch/home indicator
+.home-menu {
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-left: calc(1rem + env(safe-area-inset-left, 0px)) !important;
+}
+
+.home-footer {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    padding-left: calc(1rem + env(safe-area-inset-left, 0px)) !important;
 }
 
 .home-settings-wrap {
     position: absolute;
-    top: 1rem;
-    right: 1rem;
+    top: calc(1rem + env(safe-area-inset-top, 0px));
+    right: calc(1rem + env(safe-area-inset-right, 0px));
     z-index: 2;
 }
 
@@ -33,10 +47,12 @@
     opacity: 0.92;
 }
 
-.home-settings-button:hover {
-    transform: scale(1.04);
-    color: #f0ddb0;
-    border-color: rgba(201, 177, 115, 0.35);
+@media (hover: hover) {
+    .home-settings-button:hover {
+        transform: scale(1.04);
+        color: #f0ddb0;
+        border-color: rgba(201, 177, 115, 0.35);
+    }
 }
 
 .home-settings-button:focus-visible {
@@ -65,6 +81,12 @@
     letter-spacing: 4px;
     font-size: 1.4rem;
     text-shadow: 0 2px 12px rgba(0, 0, 0, 0.9);
+
+    // Las dos lineas usan text-nowrap: en pantallas chicas escalar para no desbordar
+    @media (max-width: 575.98px) {
+        font-size: clamp(1rem, 4.6vw, 1.4rem);
+        letter-spacing: 2px;
+    }
 }
 
 .tagline {
@@ -73,6 +95,10 @@
     letter-spacing: 1px;
     margin-top: 0.5rem;
     text-shadow: 0 1px 6px rgba(0, 0, 0, 0.8);
+
+    @media (max-width: 575.98px) {
+        font-size: clamp(0.78rem, 3.6vw, 0.95rem);
+    }
 }
 
 .home-horario {

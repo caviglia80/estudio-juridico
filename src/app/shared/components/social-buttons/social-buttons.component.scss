@@ -8,20 +8,32 @@
     padding: 0;
     color: var(--color-icon-default);
 
-    &:hover {
-        transform: scale(120%);
-        filter: brightness(120%);
+    // Touch target comodo sin alterar el tamano visual del icono
+    @media (pointer: coarse) {
+        padding: 8px;
+        margin: -8px;
     }
 }
 
-.float-button-wsp:hover {
-    color: var(--color-wsp);
-}
+// Los efectos de hover quedan "pegados" tras el tap en touch — solo puntero real
+@media (hover: hover) {
 
-.float-button-ig:hover svg {
-    fill: url(#gradient);
-}
+    .float-button-wsp:hover,
+    .float-button-ig:hover,
+    .float-button-fb:hover {
+        transform: scale(120%);
+        filter: brightness(120%);
+    }
 
-.float-button-fb:hover {
-    color: var(--color-fb);
+    .float-button-wsp:hover {
+        color: var(--color-wsp);
+    }
+
+    .float-button-ig:hover svg {
+        fill: url(#gradient);
+    }
+
+    .float-button-fb:hover {
+        color: var(--color-fb);
+    }
 }

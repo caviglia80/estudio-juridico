@@ -15,8 +15,26 @@ h3 {
     font-weight: 400;
 }
 
+html {
+    // iOS Safari: no inflar tipografias al rotar a landscape
+    -webkit-text-size-adjust: 100%;
+}
+
 body {
     margin: 0;
+    // Touch: sin flash gris al tocar (iOS/Android)
+    -webkit-tap-highlight-color: transparent;
+    // Sin rubber-band del documento (el scroll vive en los contenedores internos)
+    overscroll-behavior-y: none;
+}
+
+// Sin delay de doble-tap-zoom en controles interactivos (iOS)
+button,
+a,
+select,
+textarea,
+[role='button'] {
+    touch-action: manipulation;
 }
 
 a {
@@ -53,18 +71,23 @@ button.card {
     transition: .2s all;
     border: none;
 
-    &:hover {
-        box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5), 4px 4px 8px black;
-        text-shadow: 4px 4px 8px rgba(0, 0, 0, .8);
-        cursor: pointer;
+    // Solo con puntero real: en touch el hover queda "pegado" tras el tap
+    @media (hover: hover) {
+        &:hover {
+            box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5), 4px 4px 8px black;
+            text-shadow: 4px 4px 8px rgba(0, 0, 0, .8);
+            cursor: pointer;
+        }
     }
 }
 
 .areas .card {
-    &:hover {
-        box-shadow: none;
-        text-shadow: none;
-        cursor: default;
+    @media (hover: hover) {
+        &:hover {
+            box-shadow: none;
+            text-shadow: none;
+            cursor: default;
+        }
     }
 }
 
@@ -76,14 +99,18 @@ button.card {
     align-items: center;
     justify-content: center;
     z-index: 1050;
-    padding: 1rem;
+    // Safe areas iOS (notch / home indicator) con viewport-fit=cover
+    padding: calc(1rem + env(safe-area-inset-top, 0px)) calc(1rem + env(safe-area-inset-right, 0px)) calc(1rem + env(safe-area-inset-bottom, 0px)) calc(1rem + env(safe-area-inset-left, 0px));
     animation: modalFadeIn 0.15s ease-out;
 }
 
 .app-modal-dialog {
     width: 100%;
     max-height: 90vh;
+    // iOS Safari: alto dinamico real (las barras del navegador cambian el viewport)
+    max-height: 90dvh;
     overflow-y: auto;
+    overscroll-behavior: contain;
     border-radius: 0.5rem;
     color: var(--color-text);
 
@@ -112,6 +139,19 @@ button.card {
 :focus-visible {
     outline: 2px solid var(--color-text);
     outline-offset: 2px;
+}
+
+// Accesibilidad: respetar la preferencia del sistema de minimizar animaciones
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
 }
 
 .wsp-icon {

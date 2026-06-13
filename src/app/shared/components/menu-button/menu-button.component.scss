@@ -11,8 +11,17 @@
     display: block;
     text-shadow: 0 1px 8px rgba(0, 0, 0, 0.8);
 
-    &:hover {
-        background: rgba(0, 0, 0, 0.5);
+    // Solo con puntero real: en touch el fondo quedaria "pegado" tras el tap
+    @media (hover: hover) {
+        &:hover {
+            background: rgba(0, 0, 0, 0.5);
+        }
+    }
+
+    // Touch target comodo (Apple HIG: minimo 44px de alto)
+    @media (pointer: coarse) {
+        padding: 10px 20px;
+        min-height: 44px;
     }
 }
 
@@ -28,12 +37,15 @@
     position: relative;
     transition: .5s ease;
 
-    &:hover {
-        padding-left: 75px;
-        transition: .3s ease;
+    // La expansion con miniatura es un efecto de hover de escritorio
+    @media (hover: hover) {
+        &:hover {
+            padding-left: 75px;
+            transition: .3s ease;
 
-        .icono-miniatura {
-            display: inline;
+            .icono-miniatura {
+                display: inline;
+            }
         }
     }
 }

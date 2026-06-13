@@ -79,7 +79,8 @@
         border-radius: 8px;
         color: #f5f1e1;
         padding: 0.7rem 0.9rem;
-        font-size: 0.95rem;
+        // Minimo 16px: iOS Safari hace auto-zoom al enfocar inputs con fuente menor
+        font-size: 1rem;
         transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
 
         &:disabled {

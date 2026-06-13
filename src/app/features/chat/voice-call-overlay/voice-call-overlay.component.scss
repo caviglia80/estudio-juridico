@@ -19,7 +19,8 @@
     align-items: center;
     gap: 0.6rem;
     padding: 1.5rem;
-    max-width: 30rem;
+    // 30rem desbordaria en un iPhone de 375-390px de ancho
+    max-width: min(30rem, 92vw);
     text-align: center;
 }
 

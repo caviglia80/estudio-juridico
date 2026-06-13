@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import type { OnDestroy } from '@angular/core';
+import { NgOptimizedImage } from '@angular/common';
 import { Howl } from 'howler';
 
 const ACTION_DELAY = 700;
@@ -7,7 +8,7 @@ const MOBILE_BREAKPOINT = '(max-width: 991.98px)';
 
 @Component({
     selector: 'ej-menu-button',
-    imports: [],
+    imports: [NgOptimizedImage],
     templateUrl: './menu-button.component.html',
     styleUrl: './menu-button.component.scss',
     changeDetection: ChangeDetectionStrategy.OnPush,

@@ -63,6 +63,12 @@
     box-shadow: 0 1px 8px rgba(0, 0, 0, 0.25);
     flex-shrink: 0;
     z-index: 1;
+
+    // En mobile el chat es full-bleed: compensar el notch/status bar (viewport-fit=cover)
+    @media (max-width: 767.98px) {
+        height: calc(#{$header-height} + env(safe-area-inset-top, 0px));
+        padding-top: env(safe-area-inset-top, 0px);
+    }
 }
 
 .chat-header-left {
@@ -102,12 +108,20 @@
     cursor: pointer;
     transition: opacity 0.2s, background 0.2s;
     display: flex;
+    align-items: center;
+    justify-content: center;
 
     @include gold-focus;
 
     &:hover {
         opacity: 1;
         background: rgba(255, 255, 255, 0.08);
+    }
+
+    // Touch target minimo 44x44 (Apple HIG)
+    @media (pointer: coarse) {
+        min-width: 44px;
+        min-height: 44px;
     }
 }
 
@@ -140,6 +154,13 @@
     transition: border-color 0.2s, background-color 0.2s;
 
     @include gold-focus;
+
+    // En touch: minimo 16px (iOS hace auto-zoom al enfocar selects con fuente menor)
+    // y alto comodo para el dedo
+    @media (pointer: coarse) {
+        font-size: 1rem;
+        min-height: 40px;
+    }
 
     &:hover {
         border-color: rgba($gold, 0.5);
@@ -177,12 +198,23 @@
         opacity: 0.3;
         cursor: not-allowed;
     }
+
+    // Touch target minimo 44x44 (Apple HIG)
+    @media (pointer: coarse) {
+        min-width: 44px;
+        min-height: 44px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
 }
 
 // Messages area
 .chat-messages {
     flex: 1;
     overflow-y: auto;
+    // Contener el rebote del scroll dentro del area de mensajes (iOS rubber-band)
+    overscroll-behavior: contain;
     padding: 1.5rem 0.75rem;
     display: flex;
     flex-direction: column;
@@ -378,6 +410,12 @@
     align-items: center;
     gap: 0.35rem;
     padding: 0.35rem 0.55rem;
+
+    // Area tactil mas generosa en touch sin agrandar el chip en desktop
+    @media (pointer: coarse) {
+        padding: 0.55rem 0.8rem;
+        font-size: 0.78rem;
+    }
     border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 999px;
     background: rgba($bg-primary, 0.4);
@@ -490,13 +528,13 @@
     }
 }
 
-// Scroll to bottom FAB
+// Scroll to bottom FAB (44px: touch target minimo de Apple HIG)
 .chat-scroll-bottom {
     position: absolute;
     bottom: 5rem;
     right: 1.25rem;
-    width: 36px;
-    height: 36px;
+    width: 44px;
+    height: 44px;
     border-radius: 50%;
     border: 1px solid rgba(255, 255, 255, 0.15);
     background: rgba($bg-primary, 0.52);
@@ -547,8 +585,9 @@
     max-height: 120px;
     transition: border-color 0.2s, box-shadow 0.2s;
 
-    @media (max-width: 767.98px) {
-        // Prevents iOS Safari auto-zoom on focus (requires >= 16px)
+    // iOS Safari hace auto-zoom al enfocar campos con fuente < 16px.
+    // El breakpoint cubre telefonos; pointer coarse cubre iPad en landscape (> 768px)
+    @media (max-width: 767.98px), (pointer: coarse) {
         font-size: 1rem;
     }
 
@@ -572,6 +611,12 @@
     flex-shrink: 0;
     width: 40px;
     height: 40px;
+
+    @media (pointer: coarse) {
+        width: 44px;
+        height: 44px;
+    }
+
     border-radius: 50%;
     border: none;
     background: linear-gradient(135deg, $gold 0%, $gold-dark 100%);
@@ -601,6 +646,12 @@
     flex-shrink: 0;
     width: 40px;
     height: 40px;
+
+    @media (pointer: coarse) {
+        width: 44px;
+        height: 44px;
+    }
+
     border: none;
     border-radius: 50%;
     background: transparent;
