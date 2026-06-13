@@ -5,7 +5,7 @@ import { AsyncPipe, NgOptimizedImage } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 
 import { AuthService } from '@shared/auth';
-import { ChatService, type AudioChatResponse, type ChatMessage, type ChatModel } from '@shared/chat';
+import { ChatService, type AudioChatResponse, type ChatMessage, type ChatModel, type ChatTurnMetadata } from '@shared/chat';
 import { VoiceCallService } from '@shared/voice';
 import { ModalService } from '@shared/modal';
 import { httpErrorMessage } from '@shared/utils';
@@ -22,6 +22,11 @@ interface DisplayMessage {
     readonly content: string;
     readonly timestamp: number;
     readonly pending: boolean;
+    /** Modelo/proveedor que REALMENTE generó esta respuesta (medido en el backend). Solo en
+     *  respuestas del asistente generadas en esta sesión; el historial cargado no lo trae. */
+    readonly respondedModel?: string;
+    readonly respondedProvider?: string;
+    readonly outputTokens?: number;
 }
 
 const MAX_MESSAGE_LENGTH = 4000;
@@ -136,7 +141,7 @@ export class ChatComponent implements OnInit, OnDestroy {
             }
             this.messages.update(msgs => {
                 const withoutPending = msgs.filter(msg => msg.id !== pendingMessage.id);
-                const persistedMessages = result.messages.map(message => this.toDisplayMessage(message));
+                const persistedMessages = result.messages.map(message => this.toDisplayMessage(message, message.role === 'assistant' ? result.metadata : undefined));
                 return [...withoutPending, ...persistedMessages];
             });
             this.scrollToBottomDeferred();
@@ -208,7 +213,7 @@ export class ChatComponent implements OnInit, OnDestroy {
                 this.error.set(this.unpersistedTurnMessage(result.response));
                 return;
             }
-            this.messages.update(msgs => [...msgs, ...result.messages.map(msg => this.toDisplayMessage(msg))]);
+            this.messages.update(msgs => [...msgs, ...result.messages.map(msg => this.toDisplayMessage(msg, msg.role === 'assistant' ? result.metadata : undefined))]);
             this.scrollToBottomDeferred();
         } catch (err: unknown) {
             this.error.set(this.toErrorMessage(err));
@@ -382,16 +387,21 @@ export class ChatComponent implements OnInit, OnDestroy {
         }
     }
 
-    private toDisplayMessage(message: ChatMessage): DisplayMessage {
+    private toDisplayMessage(message: ChatMessage, metadata?: ChatTurnMetadata): DisplayMessage {
         const serverId = this.normalizeServerId(message.id);
+        const isAssistant = message.role === 'assistant';
 
         return {
             id: serverId ?? `legacy-${++this.messageIdSeq}`,
             serverId,
-            role: message.role === 'assistant' ? 'assistant' : 'user',
+            role: isAssistant ? 'assistant' : 'user',
             content: message.content,
             timestamp: message.timestamp,
             pending: false,
+            // El metadata medido se asocia solo a la respuesta del asistente del turno actual
+            ...(isAssistant && metadata
+                ? { respondedModel: metadata.model, respondedProvider: metadata.provider, outputTokens: metadata.outputTokens }
+                : {}),
         };
     }
 
@@ -456,6 +466,14 @@ export class ChatComponent implements OnInit, OnDestroy {
         this.copiedMessageId.set(messageId);
         clearTimeout(this.copyResetTimer);
         this.copyResetTimer = setTimeout(() => this.copiedMessageId.set(null), 1400);
+    }
+
+    /** Nombre corto del modelo que respondió (ej. "Sonnet 4.6"); si no está en la lista,
+     *  muestra el id crudo — señal visible de que respondió algo inesperado. */
+    protected respondedModelLabel(message: DisplayMessage): string {
+        const id = message.respondedModel;
+        if (!id) { return ''; }
+        return this.models().find(model => model.id === id)?.shortLabel ?? id;
     }
 
     private toErrorMessage(err: unknown): string {

@@ -5,10 +5,22 @@ export interface ChatMessage {
     readonly timestamp: number;
 }
 
+export interface ChatTurnMetadata {
+    /** Modelo que REALMENTE respondió (medido en el backend, no el seleccionado) */
+    readonly model: string;
+    /** Proveedor que REALMENTE respondió ('ollama' | 'claude') */
+    readonly provider: string;
+    readonly toolsUsed: readonly string[];
+    readonly historyMessages: number;
+    readonly promptTokens: number;
+    readonly outputTokens: number;
+}
+
 export interface ChatResponse {
     readonly response: string;
     readonly durationMs: number;
     readonly messages: readonly ChatMessage[];
+    readonly metadata?: ChatTurnMetadata;
 }
 
 export interface AudioChatResponse {
@@ -16,6 +28,7 @@ export interface AudioChatResponse {
     readonly response: string;
     readonly durationMs: number;
     readonly messages: readonly ChatMessage[];
+    readonly metadata?: ChatTurnMetadata;
 }
 
 export interface ChatHistory {

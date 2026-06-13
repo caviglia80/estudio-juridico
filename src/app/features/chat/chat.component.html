@@ -95,6 +95,16 @@
             </div>
             @if (msg.role === 'assistant') {
             <div class="chat-bubble-content" [innerHTML]="msg.content | markdown | async"></div>
+            @if (msg.respondedModel) {
+            <div class="chat-bubble-meta" [class.chat-bubble-meta-cloud]="msg.respondedProvider === 'claude'"
+                title="Modelo que realmente generó esta respuesta, medido en el servidor (no el seleccionado)">
+                <span class="chat-bubble-meta-dot"></span>
+                <span>{{ respondedModelLabel(msg) }}</span>
+                @if (msg.outputTokens) {
+                <span class="chat-bubble-meta-tokens">· {{ msg.outputTokens }} tok</span>
+                }
+            </div>
+            }
             } @else {
             <div class="chat-bubble-content">{{ msg.content }}</div>
             }
