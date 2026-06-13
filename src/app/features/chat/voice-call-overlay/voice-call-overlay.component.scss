@@ -7,6 +7,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    // Si el alto no alcanza (landscape/teclado), scrollear en vez de recortar el centro
+    overflow-y: auto;
     background:
         linear-gradient(160deg, rgba($bg-primary, 0.88) 0%, rgba($bg-secondary, 0.94) 100%);
     @include glass(22px, 130%);
@@ -21,7 +23,11 @@
     padding: 1.5rem;
     // 30rem desbordaria en un iPhone de 375-390px de ancho
     max-width: min(30rem, 92vw);
+    width: 100%;
     text-align: center;
+    // Con flex, margin auto mantiene el bloque perfectamente centrado y evita
+    // el recorte superior de align-items center cuando el contenido excede el alto
+    margin: auto;
 }
 
 .voice-ring {
@@ -30,8 +36,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 8.5rem;
-    height: 8.5rem;
+    width: 10.5rem;
+    height: 10.5rem;
     border-radius: 50%;
     border: 2px solid rgba($gold, 0.35);
     background: radial-gradient(circle, rgba($gold, 0.08) 0%, transparent 70%);
@@ -74,7 +80,7 @@
 }
 
 .voice-logo {
-    width: 5.2rem;
+    width: 6.5rem;
     height: auto;
     object-fit: contain;
     opacity: 0.95;
@@ -133,7 +139,10 @@
 
     @include gold-focus;
 
-    &:hover { transform: translateY(-1px); }
+    // Solo con puntero real: en touch el desplazamiento queda pegado tras el tap
+    @media (hover: hover) {
+        &:hover { transform: translateY(-1px); }
+    }
 }
 
 .voice-btn-interrupt {
